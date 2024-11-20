@@ -30,7 +30,8 @@ cookie_max_age_attribute = { "Max-Age=" ~ cookie_max_age_attribute_value }
 cookie_max_age_attribute_value = { ASCII_NONZERO_DIGIT ~ ASCII_DIGIT* }
 cookie_domain_attribute = { "Domain=" ~ cookie_domain_attribute_value }
 cookie_domain_attribute_value = { (ASCII_ALPHANUMERIC+ ~ (("." ~ ASCII_ALPHANUMERIC+) *)) } 
-cookie_path_attribute = { "Path=" ~ (!";" ~ ANY)+ }
+cookie_path_attribute = { "Path=" ~ cookie_path_attribute_value }
+cookie_path_attribute_value = { (!";" ~ ANY)+ }
 cookie_secure_attribute = { "Secure" }
 cookie_httponly_attribute = { "HttpOnly" }
 cookie_extension_attribute = { (!";" ~ ANY)+ }

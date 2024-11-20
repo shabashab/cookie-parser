@@ -1,5 +1,5 @@
 [package]
-name = "pest_cookie_parser"
+name = "cookie_parser"
 version = "0.1.0"
 edition = "2021"
 
@@ -8,3 +8,4 @@ edition = "2021"
 [dependencies]
 pest = "2.7.14"
 pest_derive = "2.7.14"
+thiserror = "2.0.3"
