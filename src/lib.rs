@@ -14,21 +14,22 @@ pub enum CookieParseError {
   ErrorCookieStringEmpty
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq)]
 pub struct CookiePair {
-  name: String,
-  value: String
+  pub name: String,
+  pub value: String
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq)]
 pub struct SetCookie {
-  pair: CookiePair,
-  secure: bool,
-  httpOnly: bool,
-  maxAge: Option<String>,
-  domain: Option<String>,
-  path: Option<String>,
-  extensions: Vec<String>,
+  pub pair: CookiePair,
+  pub secure: bool,
+  pub http_only: bool,
+  pub max_age: Option<String>,
+  pub domain: Option<String>,
+  pub expires: Option<String>,
+  pub path: Option<String>,
+  pub extensions: Vec<String>,
 }
 
 pub fn parse_cookie_string(input: &str) -> Result<Vec<CookiePair>, CookieParseError> {
@@ -60,11 +61,12 @@ pub fn parse_set_cookie(input: &str) -> Result<SetCookie, CookieParseError> {
 
   let mut set_cookie = SetCookie {
     pair: cookie_pair,
-    httpOnly: false,
+    http_only: false,
     secure: false,
     domain: None,
-    maxAge: None,
+    max_age: None,
     path: None,
+    expires: None,
     extensions: Vec::new()
   };
 
@@ -79,7 +81,7 @@ pub fn parse_set_cookie(input: &str) -> Result<SetCookie, CookieParseError> {
       .ok_or_else(|| CookieParseError::ErrorCookieStringSyntax)?;
 
     match inner_attribute.as_rule() {
-      Rule::cookie_httponly_attribute => set_cookie.httpOnly = true,
+      Rule::cookie_httponly_attribute => set_cookie.http_only = true,
       Rule::cookie_secure_attribute => set_cookie.secure = true,
       Rule::cookie_domain_attribute => {
         let value = inner_attribute
@@ -103,7 +105,7 @@ pub fn parse_set_cookie(input: &str) -> Result<SetCookie, CookieParseError> {
           return Err(CookieParseError::ErrorCookieStringSyntax)
         }
 
-        set_cookie.maxAge = Some(String::from(value.as_str()));
+        set_cookie.max_age = Some(String::from(value.as_str()));
       }
       Rule::cookie_path_attribute => {
         let value = inner_attribute
@@ -117,6 +119,18 @@ pub fn parse_set_cookie(input: &str) -> Result<SetCookie, CookieParseError> {
 
         set_cookie.path = Some(String::from(value.as_str()));
       },
+      Rule::cookie_expires_attribute => {
+        let value = inner_attribute
+          .into_inner()
+          .next()
+          .ok_or_else(|| CookieParseError::ErrorCookieStringSyntax)?;
+
+        if value.as_rule() != Rule::cookie_expires_attribute_value {
+          return Err(CookieParseError::ErrorCookieStringSyntax)
+        }
+
+        set_cookie.expires = Some(String::from(value.as_str()));
+      }
       Rule::cookie_extension_attribute => {
         set_cookie.extensions.push(String::from(inner_attribute.as_str()));
       }

@@ -2,8 +2,10 @@
 
 separator = { "(" | ")" | "<" | ">" | "@" | "," | ";" | ":" | "\\" | "\"" | "/" | "[" | "]" | "?" | "=" | "{" | "}" }
 
-cookie_string = { cookie_pair ~ ((";" ~ WHITE_SPACE ~ cookie_pair ) *) }
-set_cookie_string = { cookie_pair ~ ((";" ~ WHITE_SPACE ~ cookie_attribute) *) }
+eoi = _{ !ANY }
+
+cookie_string = { cookie_pair ~ ((";" ~ WHITE_SPACE ~ cookie_pair ) *) ~ eoi }
+set_cookie_string = { cookie_pair ~ ((";" ~ WHITE_SPACE ~ cookie_attribute) *) ~ eoi }
 
 cookie_pair = { cookie_name ~ "=" ~ cookie_value } 
 cookie_name = { 
@@ -24,6 +26,7 @@ cookie_attribute = {
   | cookie_extension_attribute 
 }
 
+
 cookie_expires_attribute = { "Expires=" ~ cookie_expires_attribute_value }
 cookie_expires_attribute_value = { ((!separator ~ ANY) +) }
 cookie_max_age_attribute = { "Max-Age=" ~ cookie_max_age_attribute_value }
@@ -34,4 +37,7 @@ cookie_path_attribute = { "Path=" ~ cookie_path_attribute_value }
 cookie_path_attribute_value = { (!";" ~ ANY)+ }
 cookie_secure_attribute = { "Secure" }
 cookie_httponly_attribute = { "HttpOnly" }
-cookie_extension_attribute = { (!";" ~ ANY)+ }
+
+cookie_known_direct_attributes = _{ "HttpOnly" | "Secure" }
+cookie_known_value_attributes = _{ "Expires" | "Max-Age" | "Domain" | "Path" }
+cookie_extension_attribute = { !(cookie_known_direct_attributes) ~ !(cookie_known_value_attributes ~ "=" ~ (!";" ~ ANY)+) ~ ((!";" ~ ANY)+) }
