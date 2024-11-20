@@ -1,0 +1,36 @@
+// https://datatracker.ietf.org/doc/html/rfc6265#section-4.1.1
+
+separator = { "(" | ")" | "<" | ">" | "@" | "," | ";" | ":" | "\\" | "\"" | "/" | "[" | "]" | "?" | "=" | "{" | "}" }
+
+cookie_string = { cookie_pair ~ ((";" ~ WHITE_SPACE ~ cookie_pair ) *) }
+set_cookie_string = { cookie_pair ~ ((";" ~ WHITE_SPACE ~ cookie_attribute) *) }
+
+cookie_pair = { cookie_name ~ "=" ~ cookie_value } 
+cookie_name = { 
+  (!separator ~ ANY) +  // token: https://datatracker.ietf.org/doc/html/rfc2616#section-2.2
+}
+cookie_value = {
+  ((!separator ~ ANY) +)
+  | ("\"" ~ ((!separator ~ ANY) +) ~ "\"")
+}
+
+cookie_attribute = {
+  cookie_expires_attribute 
+  | cookie_max_age_attribute 
+  | cookie_domain_attribute 
+  | cookie_path_attribute 
+  | cookie_secure_attribute 
+  | cookie_httponly_attribute 
+  | cookie_extension_attribute 
+}
+
+cookie_expires_attribute = { "Expires=" ~ cookie_expires_attribute_value }
+cookie_expires_attribute_value = { ((!separator ~ ANY) +) }
+cookie_max_age_attribute = { "Max-Age=" ~ cookie_max_age_attribute_value }
+cookie_max_age_attribute_value = { ASCII_NONZERO_DIGIT ~ ASCII_DIGIT* }
+cookie_domain_attribute = { "Domain=" ~ cookie_domain_attribute_value }
+cookie_domain_attribute_value = { (ASCII_ALPHANUMERIC+ ~ (("." ~ ASCII_ALPHANUMERIC+) *)) } 
+cookie_path_attribute = { "Path=" ~ (!";" ~ ANY)+ }
+cookie_secure_attribute = { "Secure" }
+cookie_httponly_attribute = { "HttpOnly" }
+cookie_extension_attribute = { (!";" ~ ANY)+ }
