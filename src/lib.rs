@@ -43,7 +43,7 @@ pub fn parse_cookie_string(input: &str) -> Result<Vec<CookiePair>, CookieParseEr
         .map(|pair| parse_cookie_pair(&pair))
         .collect();
 
-    return cookie_pairs.map_err(|_| CookieParseError::ErrorCookieStringSyntax);
+    cookie_pairs.map_err(|_| CookieParseError::ErrorCookieStringSyntax)
 }
 
 pub fn parse_set_cookie(input: &str) -> Result<SetCookie, CookieParseError> {
@@ -140,7 +140,7 @@ pub fn parse_set_cookie(input: &str) -> Result<SetCookie, CookieParseError> {
         }
     }
 
-    return Ok(set_cookie);
+    Ok(set_cookie)
 }
 
 fn parse_cookie_pair(input: &Pair<Rule>) -> Result<CookiePair, CookieParseError> {
