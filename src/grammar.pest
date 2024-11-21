@@ -4,9 +4,13 @@ separator = { "(" | ")" | "<" | ">" | "@" | "," | ";" | ":" | "\\" | "\"" | "/" 
 
 eoi = _{ !ANY }
 
+// Name=value; Name2=value2
 cookie_string = { cookie_pair ~ ((";" ~ WHITE_SPACE ~ cookie_pair ) *) ~ eoi }
+
+// Name=Value; Expires=Date; Max-Age=NonZero-Digit; Domain=google.com; Path=/path/to/file; Secure; HttpOnly
 set_cookie_string = { cookie_pair ~ ((";" ~ WHITE_SPACE ~ cookie_attribute) *) ~ eoi }
 
+// Name=Value
 cookie_pair = { cookie_name ~ "=" ~ cookie_value } 
 cookie_name = { 
   (!separator ~ ANY) +  // token: https://datatracker.ietf.org/doc/html/rfc2616#section-2.2
@@ -25,7 +29,6 @@ cookie_attribute = {
   | cookie_httponly_attribute 
   | cookie_extension_attribute 
 }
-
 
 cookie_expires_attribute = { "Expires=" ~ cookie_expires_attribute_value }
 cookie_expires_attribute_value = { ((!separator ~ ANY) +) }

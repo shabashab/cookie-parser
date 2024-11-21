@@ -1,11 +1,14 @@
+#![doc = include_str!("../doc.md")]
+
 use pest::{iterators::Pair, Parser};
 use pest_derive::Parser;
 use thiserror::Error;
 
 #[derive(Parser)]
 #[grammar = "./grammar.pest"]
-pub struct Grammar;
+struct Grammar;
 
+/// An error that can occur when parsing a cookie/set-cookie string.
 #[derive(Error, Debug)]
 pub enum CookieParseError {
     #[error("Invalid cookie string syntax")]
@@ -14,12 +17,14 @@ pub enum CookieParseError {
     ErrorCookieStringEmpty,
 }
 
+// A structure that represents the cookie pair, which is the name and value of a cookie.
 #[derive(Debug, PartialEq, Eq)]
 pub struct CookiePair {
     pub name: String,
     pub value: String,
 }
 
+/// A structure that represents a set-cookie header contents and its attributes
 #[derive(Debug, PartialEq, Eq)]
 pub struct SetCookie {
     pub pair: CookiePair,
@@ -32,6 +37,7 @@ pub struct SetCookie {
     pub extensions: Vec<String>,
 }
 
+/// Parse a cookie string into a vector of cookie pairs.
 pub fn parse_cookie_string(input: &str) -> Result<Vec<CookiePair>, CookieParseError> {
     let cookie_string = Grammar::parse(Rule::cookie_string, input)
         .map_err(|_| CookieParseError::ErrorCookieStringSyntax)?
@@ -46,6 +52,7 @@ pub fn parse_cookie_string(input: &str) -> Result<Vec<CookiePair>, CookieParseEr
     cookie_pairs.map_err(|_| CookieParseError::ErrorCookieStringSyntax)
 }
 
+/// Parse a set-cookie string into a set-cookie structure.
 pub fn parse_set_cookie(input: &str) -> Result<SetCookie, CookieParseError> {
     let set_cookie_string = Grammar::parse(Rule::set_cookie_string, input)
         .map_err(|_| CookieParseError::ErrorCookieStringSyntax)?
