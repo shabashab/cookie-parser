@@ -10,14 +10,7 @@ A Rust library for parsing Cookie and Set-Cookie HTTP headers with support for a
 
 ## Usage
 
-Add this to your `Cargo.toml`:
-
-```toml
-[dependencies]
-cookie_parser = "1.0.0" 
-```
-
-or install using cargo:
+Install using cargo:
 
 ```sh
 cargo add cookie_parser
