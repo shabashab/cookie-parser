@@ -4,6 +4,8 @@
 
 This package/CLI allows you to parse Cookie/Set-Cookie header contents into a more computer-readable struct. The parser is built on pest
 
+Crate: [cookie_parser](https://crates.io/crates/cookie_parser)
+
 ## Usage
 
 ### Installation
@@ -14,7 +16,7 @@ cargo add cookie_parser
 
 ### Using as a library
 
-In order to know more information about usage of this crate as a library, please, refer to [Doc](/doc.md)
+In order to know more information about usage of this crate as a library, please, refer to [Doc](/doc.md) or [docs.rs](https://docs.rs/cookie_parser/latest/cookie_parser/)
 
 ### Using as a CLI
 
