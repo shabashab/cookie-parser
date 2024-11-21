@@ -1,6 +1,6 @@
 [package]
 name = "cookie_parser"
-version = "1.0.0"
+version = "1.0.1"
 edition = "2021"
 license = "MIT"
 authors = ["Artem Tarasenko <artem.tarasenko@ukma.edu.ua,shabashab.04@gmail.com>"]
